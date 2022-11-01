@@ -3,9 +3,28 @@ import { useState } from "react"
 export default function AddAlbum() {
     const [album, setAlbum] = useState('')
     const [artist, setArtist] = useState('')
-    const [year, setYear] = useState()
+    const [year, setYear] = useState(1970)
     const handleSubmit = (e) => {
         e.preventDefault()
+        //let's check to see that they entered all the data
+        if (!album || !artist || !year) {
+            alert('please enter all info')
+            return
+        }
+        const newAlbum = { artist, album, year }
+        fetch('https://albums-api-el.web.app/albums', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(newAlbum)
+        })
+            .then(() => {
+                setAlbum('')
+                setArtist('')
+                setYear(1970)
+            })
+            .catch(alert)
     }
     return (
         <section className="add-album">
@@ -26,8 +45,8 @@ export default function AddAlbum() {
                     <input type="number" name="year"
                         onChange={e => setYear(e.target.value)}
                         value={year} /></label>
-                        <br />
-                        <input type="submit" value='Add Album' />
+                <br />
+                <input type="submit" value='Add Album' />
             </form>
         </section>
     )
